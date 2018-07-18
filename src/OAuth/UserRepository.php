@@ -8,6 +8,7 @@ use League\OAuth2\Server\Repositories\UserRepositoryInterface;
 
 class UserRepository implements UserRepositoryInterface
 {
+    /** @var \Byteam\Spectre\User  */
     protected $users;
 
     function __construct()

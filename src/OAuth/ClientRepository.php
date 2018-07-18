@@ -7,6 +7,7 @@ use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 
 class ClientRepository implements ClientRepositoryInterface
 {
+    /** @var \Byteam\Spectre\OAuthClient  */
     protected $oauthClients;
 
     function __construct()
