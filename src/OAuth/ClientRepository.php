@@ -1,0 +1,29 @@
+<?php
+
+namespace Byteam\Spectre\OAuth;
+
+
+use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
+
+class ClientRepository implements ClientRepositoryInterface
+{
+    protected $oauthClients;
+
+    function __construct()
+    {
+        $this->oauthClients = app('Byteam\Spectre\OAuthClient');
+    }
+
+    public function getClientEntity($clientIdentifier, $grantType = null, $clientSecret = null, $mustValidateSecret = true)
+    {
+        $client = $this->oauthClients->find($clientIdentifier);
+        if (!is_null($client) && $client->secret == $clientSecret && !$client->revoked) {
+            $client->setIdentifier($clientIdentifier);
+            switch ($grantType) {
+                case "password":
+                    return $client->type == "P" ? $client : null;
+            }
+        }
+        return null;
+    }
+}
