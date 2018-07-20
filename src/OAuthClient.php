@@ -11,7 +11,7 @@ class OAuthClient extends Model implements ClientEntityInterface
 {
     use EntityTrait;
 
-    protected $table = "spc_oauth_clients";
+    protected $table = "oauth_clients";
 
     public function getName()
     {

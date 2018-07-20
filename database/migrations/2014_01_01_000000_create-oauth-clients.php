@@ -13,7 +13,7 @@ class CreateOauthClients extends Migration
      */
     public function up()
     {
-        Schema::create('spc_oauth_clients', function (Blueprint $table) {
+        Schema::create('oauth_clients', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id');
             $table->string('name');
@@ -32,6 +32,6 @@ class CreateOauthClients extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('spc_oauth_clients');
+        Schema::dropIfExists('oauth_clients');
     }
 }

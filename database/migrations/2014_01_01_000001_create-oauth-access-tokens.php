@@ -13,7 +13,7 @@ class CreateOauthAccessTokens extends Migration
      */
     public function up()
     {
-        Schema::create('spc_oauth_access_tokens', function (Blueprint $table) {
+        Schema::create('oauth_access_tokens', function (Blueprint $table) {
             $table->string('id', 100)->primary();
             $table->integer('user_id')->index()->nullable();
             $table->integer('client_id');
@@ -31,6 +31,6 @@ class CreateOauthAccessTokens extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('spc_oauth_access_tokens');
+        Schema::dropIfExists('oauth_access_tokens');
     }
 }

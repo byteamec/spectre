@@ -15,7 +15,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 {
     use Authenticatable, Authorizable, EntityTrait;
 
-    protected $table = 'spc_users';
+    protected $table = 'users';
 
     /**
      * The attributes that are mass assignable.
@@ -36,6 +36,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     ];
 
     public function roles() {
-        return $this->belongsToMany(Role::class, 'spc_role_user');
+        return $this->belongsToMany(Role::class, 'role_user');
     }
 }

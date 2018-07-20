@@ -13,7 +13,7 @@ class CreateUsersAndRoles extends Migration
      */
     public function up()
     {
-        Schema::create('spc_users', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->index();
             $table->string('password');
@@ -23,14 +23,14 @@ class CreateUsersAndRoles extends Migration
             $table->timestamps();
         });
 
-        Schema::create('spc_role_child_role', function (Blueprint $table) {
+        Schema::create('role_child_role', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('parent_role_id');
             $table->integer('child_role_id');
             $table->timestamps();
         });
 
-        Schema::create('spc_roles', function(Blueprint $table) {
+        Schema::create('roles', function(Blueprint $table) {
             $table->increments('id');
             $table->string('name')->unique();
             $table->string('slug')->unique();
@@ -38,24 +38,24 @@ class CreateUsersAndRoles extends Migration
             $table->timestamps();
         });
 
-        Schema::create('spc_role_user', function(Blueprint $table) {
+        Schema::create('role_user', function(Blueprint $table) {
             $table->increments('id');
             $table->integer('role_id')->unsigned()->index();
-            $table->foreign('role_id')->references('id')->on('spc_roles')->onDelete('cascade');
+            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
             $table->integer('user_id')->unsigned()->index();
-            $table->foreign('user_id')->references('id')->on('spc_users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
 
-        Schema::create('spc_role_routes', function(Blueprint $table) {
+        Schema::create('role_routes', function(Blueprint $table) {
             $table->increments('id');
             $table->string('route_name');
             $table->integer('role_id')->unsigned()->index();
-            $table->foreign('role_id')->references('id')->on('spc_roles')->onDelete('cascade');
+            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
             $table->timestamps();
         });
 
-        Schema::create('spc_navigation_items', function (Blueprint $table) {
+        Schema::create('navigation_items', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('sort')->nullable();
             $table->string('icon')->nullable();
@@ -63,16 +63,16 @@ class CreateUsersAndRoles extends Migration
             $table->string('route')->nullable();
             $table->string('type')->nullable();
             $table->integer('parent_id')->nullable();
-            $table->foreign('parent_id')->references('id')->on('spc_navigation_items');
+            $table->foreign('parent_id')->references('id')->on('navigation_items');
             $table->timestamps();
         });
 
-        Schema::create('spc_navigation_item_role', function (Blueprint $table) {
+        Schema::create('navigation_item_role', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('navigation_item_id');
             $table->integer('role_id');
-            $table->foreign('navigation_item_id')->references('id')->on('spc_navigation_items');
-            $table->foreign('role_id')->references('id')->on('spc_roles');
+            $table->foreign('navigation_item_id')->references('id')->on('navigation_items');
+            $table->foreign('role_id')->references('id')->on('roles');
         });
     }
 
@@ -83,12 +83,12 @@ class CreateUsersAndRoles extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('spc_navigation_item_role');
-        Schema::dropIfExists('spc_navigation_items');
-        Schema::dropIfExists('spc_role_routes');
-        Schema::dropIfExists('spc_role_user');
-        Schema::dropIfExists('spc_roles');
-        Schema::dropIfExists('spc_role_child_role');
-        Schema::dropIfExists('spc_users');
+        Schema::dropIfExists('navigation_item_role');
+        Schema::dropIfExists('navigation_items');
+        Schema::dropIfExists('role_routes');
+        Schema::dropIfExists('role_user');
+        Schema::dropIfExists('roles');
+        Schema::dropIfExists('role_child_role');
+        Schema::dropIfExists('users');
     }
 }

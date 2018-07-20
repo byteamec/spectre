@@ -12,5 +12,5 @@ class OAuthRefreshToken extends Model implements RefreshTokenEntityInterface
 {
     use EntityTrait, RefreshTokenTrait;
 
-    protected $table = "spc_oauth_refresh_tokens";
+    protected $table = "oauth_refresh_tokens";
 }

@@ -13,5 +13,5 @@ class OAuthToken extends Model implements AccessTokenEntityInterface
 {
     use EntityTrait, AccessTokenTrait, TokenEntityTrait;
 
-    protected $table = "spc_oauth_access_tokens";
+    protected $table = "oauth_access_tokens";
 }

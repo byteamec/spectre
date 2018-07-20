@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Role extends Model
 {
-    protected $table = 'spc_roles';
+    protected $table = 'roles';
 
     protected $fillable = ['name', 'slug', 'description', 'created_at', 'updated_at'];
 
@@ -17,6 +17,6 @@ class Role extends Model
 
     public function children()
     {
-        return $this->belongsToMany(Role::class , 'spc_role_child_role', 'parent_role_id', 'child_role_id');
+        return $this->belongsToMany(Role::class , 'role_child_role', 'parent_role_id', 'child_role_id');
     }
 }
