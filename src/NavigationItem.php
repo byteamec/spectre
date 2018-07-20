@@ -7,8 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class NavigationItem extends Model
 {
+    protected $table = 'spc_navigation_items';
+
     public  function roles() {
-        return $this->belongsToMany(Role::class);
+        return $this->belongsToMany(Role::class, 'spc_navigation_item_role');
     }
 
     public function children() {

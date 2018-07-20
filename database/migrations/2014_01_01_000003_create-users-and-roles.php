@@ -41,9 +41,9 @@ class CreateUsersAndRoles extends Migration
         Schema::create('spc_role_user', function(Blueprint $table) {
             $table->increments('id');
             $table->integer('role_id')->unsigned()->index();
-            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
+            $table->foreign('role_id')->references('id')->on('spc_roles')->onDelete('cascade');
             $table->integer('user_id')->unsigned()->index();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('spc_users')->onDelete('cascade');
             $table->timestamps();
         });
 
@@ -51,7 +51,7 @@ class CreateUsersAndRoles extends Migration
             $table->increments('id');
             $table->string('route_name');
             $table->integer('role_id')->unsigned()->index();
-            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
+            $table->foreign('role_id')->references('id')->on('spc_roles')->onDelete('cascade');
             $table->timestamps();
         });
 
@@ -63,7 +63,7 @@ class CreateUsersAndRoles extends Migration
             $table->string('route')->nullable();
             $table->string('type')->nullable();
             $table->integer('parent_id')->nullable();
-            $table->foreign('parent_id')->references('id')->on('navigation_items');
+            $table->foreign('parent_id')->references('id')->on('spc_navigation_items');
             $table->timestamps();
         });
 
@@ -71,8 +71,8 @@ class CreateUsersAndRoles extends Migration
             $table->increments('id');
             $table->integer('navigation_item_id');
             $table->integer('role_id');
-            $table->foreign('navigation_item_id')->references('id')->on('navigation_items');
-            $table->foreign('role_id')->references('id')->on('roles');
+            $table->foreign('navigation_item_id')->references('id')->on('spc_navigation_items');
+            $table->foreign('role_id')->references('id')->on('spc_roles');
         });
     }
 
