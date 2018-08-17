@@ -13,6 +13,7 @@ use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\CryptKey;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Grant\PasswordGrant;
+use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use League\OAuth2\Server\ResourceServer;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 
@@ -53,6 +54,7 @@ class SpectreServiceProvider extends ServiceProvider
         $this->app->singleton(AuthorizationServer::class, function () {
             return tap($this->makeAuthorizationServer(), function ($server) {
                 $server->enableGrantType($this->makePasswordGrant(), new \DateInterval('PT1H'));
+                $server->enableGrantType($this->makeRefreshGrant(), new \DateInterval('PT1H'));
             });
         });
 
@@ -101,6 +103,21 @@ class SpectreServiceProvider extends ServiceProvider
         $passwordGrant->setRefreshTokenTTL(new \DateInterval('P1M'));
 
         return $passwordGrant;
+    }
+
+    /**
+     * @return RefreshTokenGrant
+     * @throws \Exception
+     */
+    private function makeRefreshGrant()
+    {
+        $refreshGrant = new RefreshTokenGrant(
+            new RefreshTokenRepository()
+        );
+
+        $refreshGrant->setRefreshTokenTTL(new \DateInterval('P1M'));
+
+        return $refreshGrant;
     }
 
     /**

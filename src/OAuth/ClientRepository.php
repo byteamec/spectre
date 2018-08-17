@@ -22,6 +22,7 @@ class ClientRepository implements ClientRepositoryInterface
             $client->setIdentifier($clientIdentifier);
             switch ($grantType) {
                 case "password":
+                case "refresh_token":
                     return $client->type == "P" ? $client : null;
             }
         }

@@ -9,6 +9,14 @@ use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 
 class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 {
+    /** @var \Byteam\Spectre\OAuthRefreshToken  */
+    protected $oauthRefreshTokens;
+
+    function __construct()
+    {
+        $this->oauthRefreshTokens = app('Byteam\Spectre\OAuthRefreshToken');
+    }
+
     public function getNewRefreshToken()
     {
         return new OAuthRefreshToken();
@@ -24,11 +32,17 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 
     public function revokeRefreshToken($tokenId)
     {
-        // TODO: Implement revokeRefreshToken() method.
+        $refreshTokenEntity = $this->oauthRefreshTokens->find($tokenId);
+        $refreshTokenEntity->revoked = true;
+        $refreshTokenEntity->save();
     }
 
     public function isRefreshTokenRevoked($tokenId)
     {
-        // TODO: Implement isRefreshTokenRevoked() method.
+        $refreshTokenEntity = $this->oauthRefreshTokens->find($tokenId);
+        if ($refreshTokenEntity != null) {
+            return $refreshTokenEntity->revoked;
+        }
+        return true;
     }
 }

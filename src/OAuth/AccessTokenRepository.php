@@ -10,6 +10,14 @@ use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
 
 class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
+    /** @var \Byteam\Spectre\OAuthToken  */
+    protected $oauthAccessTokens;
+
+    function __construct()
+    {
+        $this->oauthAccessTokens = app('Byteam\Spectre\OAuthToken');
+    }
+
     public function getNewToken(ClientEntityInterface $clientEntity, array $scopes, $userIdentifier = null)
     {
         $token = new OAuthToken();
@@ -29,11 +37,17 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
 
     public function revokeAccessToken($tokenId)
     {
-        // TODO: Implement revokeAccessToken() method.
+        $accessTokenEntity = $this->oauthAccessTokens->find($tokenId);
+        $accessTokenEntity->revoked = true;
+        $accessTokenEntity->save();
     }
 
     public function isAccessTokenRevoked($tokenId)
     {
-        // TODO: Implement isAccessTokenRevoked() method.
+        $accessTokenEntity = $this->oauthAccessTokens->find($tokenId);
+        if ($accessTokenEntity != null) {
+            return $accessTokenEntity->revoked;
+        }
+        return true;
     }
 }
