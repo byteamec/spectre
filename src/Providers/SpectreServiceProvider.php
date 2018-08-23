@@ -7,7 +7,6 @@ use Byteam\Spectre\OAuth\ClientRepository;
 use Byteam\Spectre\OAuth\RefreshTokenRepository;
 use Byteam\Spectre\OAuth\ScopeRepository;
 use Byteam\Spectre\OAuth\UserRepository;
-use Byteam\Spectre\User;
 use Illuminate\Support\ServiceProvider;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\CryptKey;
@@ -19,8 +18,6 @@ use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 
 class SpectreServiceProvider extends ServiceProvider
 {
-    protected $userType;
-
     /**
      *
      */
@@ -38,12 +35,6 @@ class SpectreServiceProvider extends ServiceProvider
         });
 
         $this->app->configure('spectre');
-        if (!is_null(config('spectre.user.class'))) {
-            $this->userType = config('spectre.user.class');
-        }
-        else {
-            $this->userType = User::class;
-        }
     }
 
     /**
@@ -131,7 +122,10 @@ class SpectreServiceProvider extends ServiceProvider
         );
     }
 
-
+    /**
+     * @param $request
+     * @return object|null
+     */
     private function getUserViaRequest($request)
     {
         $psr = (new DiactorosFactory)->createRequest($request);
@@ -139,7 +133,12 @@ class SpectreServiceProvider extends ServiceProvider
             $psr = $this->app->make(ResourceServer::class)
                 ->validateAuthenticatedRequest($psr);
 
-            return (new $this->userType)->find($psr->getAttribute('oauth_user_id'));
+            $client = app('Byteam\Spectre\OAuthClient')->find($psr->getAttribute('oauth_client_id'));
+            if ($client->user_type == null)
+                $users = app('Byteam\Spectre\User');
+            else
+                $users = app($client->user_type);
+            return $users->find($psr->getAttribute('oauth_user_id'));
         } catch (OAuthServerException $e) {
             return null;
         }

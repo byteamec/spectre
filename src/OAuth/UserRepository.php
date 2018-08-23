@@ -8,14 +8,6 @@ use League\OAuth2\Server\Repositories\UserRepositoryInterface;
 
 class UserRepository implements UserRepositoryInterface
 {
-    /** @var \Byteam\Spectre\User  */
-    protected $users;
-
-    function __construct()
-    {
-        $this->users = app('Byteam\Spectre\User');
-    }
-
     public function getUserEntityByUserCredentials(
         $username,
         $password,
@@ -23,7 +15,12 @@ class UserRepository implements UserRepositoryInterface
         ClientEntityInterface $clientEntity
     )
     {
-        $user = $this->users->where('name', $username)->first();
+        if ($clientEntity->user_type == null)
+            $users = app('\Byteam\Spectre\User');
+        else
+            $users = app($clientEntity->user_type);
+
+        $user = $users->where('name', $username)->first();
         if (!is_null($user)) {
             $user->setIdentifier($user->id);
             $hasher = app('hash');
