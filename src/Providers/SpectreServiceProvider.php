@@ -18,6 +18,10 @@ use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 
 class SpectreServiceProvider extends ServiceProvider
 {
+    private $accessTokenInterval;
+
+    private $refreshTokenInterval;
+
     /**
      *
      */
@@ -33,8 +37,6 @@ class SpectreServiceProvider extends ServiceProvider
         $this->app['auth']->viaRequest('api', function ($request) {
             return $this->getUserViaRequest($request);
         });
-
-        $this->app->configure('spectre');
     }
 
     /**
@@ -42,10 +44,14 @@ class SpectreServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->configure('spectre');
+        $this->accessTokenInterval = config('spectre.interval.access_token', 'PT1H');
+        $this->refreshTokenInterval = config('spectre.interval.refresh_token', 'P1M');
+
         $this->app->singleton(AuthorizationServer::class, function () {
             return tap($this->makeAuthorizationServer(), function ($server) {
-                $server->enableGrantType($this->makePasswordGrant(), new \DateInterval('PT1H'));
-                $server->enableGrantType($this->makeRefreshGrant(), new \DateInterval('PT1H'));
+                $server->enableGrantType($this->makePasswordGrant(), new \DateInterval($this->accessTokenInterval));
+                $server->enableGrantType($this->makeRefreshGrant(), new \DateInterval($this->accessTokenInterval));
             });
         });
 
@@ -91,7 +97,7 @@ class SpectreServiceProvider extends ServiceProvider
             new RefreshTokenRepository()
         );
 
-        $passwordGrant->setRefreshTokenTTL(new \DateInterval('P1M'));
+        $passwordGrant->setRefreshTokenTTL(new \DateInterval($this->refreshTokenInterval));
 
         return $passwordGrant;
     }
@@ -106,7 +112,7 @@ class SpectreServiceProvider extends ServiceProvider
             new RefreshTokenRepository()
         );
 
-        $refreshGrant->setRefreshTokenTTL(new \DateInterval('P1M'));
+        $refreshGrant->setRefreshTokenTTL(new \DateInterval($this->refreshTokenInterval));
 
         return $refreshGrant;
     }
