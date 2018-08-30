@@ -15,7 +15,7 @@ class CreateUsersAndRoles extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')-unique();
+            $table->string('name')->unique();
             $table->string('password');
             $table->boolean('is_active')->nullable()->default(true);
             $table->string('reset_token')->nullable();
