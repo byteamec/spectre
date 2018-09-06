@@ -2,7 +2,7 @@
 
 namespace Byteam\Spectre\Http\Middleware;
 
-use Byteam\Spectre\Exceptions\HttpJsonException;
+use Byteam\Spectre\Exception\OAuthException;
 use Closure;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\ResourceServer;
@@ -25,8 +25,11 @@ class OAuthMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Closure $next
+     *
+     * @throws OAuthException
+     *
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -36,10 +39,7 @@ class OAuthMiddleware
         try {
             $psr = $this->resourceServer->validateAuthenticatedRequest($psr);
         } catch (OAuthServerException $e) {
-            throw new HttpJsonException(
-                $e->getHttpStatusCode(),
-                [],
-                $e->getMessage());
+            throw new OAuthException($e);
         }
 
         return $next($request);
