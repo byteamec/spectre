@@ -21,7 +21,7 @@ class OAuthException extends \Exception
     {
         parent::__construct($previous->getMessage(), $previous->getCode(), $previous);
         if ($previous->getCode() == 9) {
-            $this->headers['WWW-Authenticate'] = 'Bearer';
+            $this->headers['WWW-Authenticate'] = 'Bearer realm="jakiro-api"';
         }
     }
 
