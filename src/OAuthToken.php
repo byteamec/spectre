@@ -33,6 +33,7 @@ class OAuthToken extends Model implements AccessTokenEntityInterface
             ->setNotBefore(time())
             ->setExpiration($this->getExpiryDateTime()->getTimestamp())
             ->setSubject($this->getUserIdentifier())
+            ->set('scopes', $this->getScopes())
             ->sign(new Sha256(), new Key($privateKey->getKeyPath(), $privateKey->getPassPhrase()))
             ->getToken();
     }
