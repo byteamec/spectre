@@ -14,7 +14,7 @@ class NavigationItem extends Model
     }
 
     public function children() {
-        return $this->hasMany(NavigationItem::class, 'parent_id')->with('children');
+        return $this->hasMany(NavigationItem::class, 'parent_id')->with('children')->orderBy('sort');
     }
 
     public function parent() {
