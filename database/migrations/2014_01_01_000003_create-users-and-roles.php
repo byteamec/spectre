@@ -49,7 +49,7 @@ class CreateUsersAndRoles extends Migration
 
         Schema::create('role_routes', function(Blueprint $table) {
             $table->increments('id');
-            $table->string('route_name');
+            $table->string('route_name')->index();
             $table->integer('role_id')->unsigned()->index();
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
             $table->timestamps();
