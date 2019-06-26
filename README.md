@@ -50,6 +50,12 @@ return [
 ```
 Only available options right now are expirations times for access_token as well for refresh_token.
 
+## Usage
+
+All oauth2 request should be POSTed to route `/oauth/token` for example `http://your-amazing-project/public/oauth/token`
+
+To protect your routes add the `oauth` middleware.
+
 ## Extending
 If you want to add field or functionality to the default User extend your User class form SpectreUser
 ```php
