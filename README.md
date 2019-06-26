@@ -18,7 +18,7 @@ Add this repository as a dependency on composer.json
   "repositories": [
     {
       "type": "vcs",
-      "url": "git@github.com:fvasquezc23/spectre.git"
+      "url": "git@github.com:byteamec/spectre.git"
     }
   ]
 }
