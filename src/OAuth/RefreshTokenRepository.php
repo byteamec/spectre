@@ -24,6 +24,20 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 
     public function persistNewRefreshToken(RefreshTokenEntityInterface $refreshTokenEntity)
     {
+        /** @var $clientEntity \Byteam\Spectre\OAuthClient */
+        $clientEntity = $refreshTokenEntity->getAccessToken()->getClient();
+        if ($clientEntity->single_session) {
+            $refreshTksToBeRevoked = $this->oauthRefreshTokens
+                ->join('oauth_access_tokens', 'oauth_refresh_tokens.access_token_id', '=', 'oauth_access_tokens.id')
+                ->where([
+                    ['user_id', '=', $refreshTokenEntity->getAccessToken()->getUserIdentifier()],
+                    ['client_id', '=', $clientEntity->id],
+                    ['oauth_refresh_tokens.revoked', '=', false]])
+                ->pluck('oauth_refresh_tokens.id');
+            $this->oauthRefreshTokens
+                ->whereIn('id', $refreshTksToBeRevoked)
+                ->update(['revoked' => true]);
+        }
         $refreshTokenEntity->id = $refreshTokenEntity->getIdentifier();
         $refreshTokenEntity->access_token_id = $refreshTokenEntity->getAccessToken()->getIdentifier();
         $refreshTokenEntity->expires_at = $refreshTokenEntity->getExpiryDateTime();

@@ -30,6 +30,16 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
 
     public function persistNewAccessToken(AccessTokenEntityInterface $accessTokenEntity)
     {
+        /** @var $clientEntity \Byteam\Spectre\OAuthClient */
+        $clientEntity = $accessTokenEntity->getClient();
+        if ($clientEntity->single_session) {
+            $this->oauthAccessTokens
+                ->where([
+                    ['user_id', '=', $accessTokenEntity->getUserIdentifier()],
+                    ['client_id', '=', $clientEntity->id],
+                    ['revoked', '=', false]])
+                ->update(['revoked' => true]);
+        }
         $accessTokenEntity->id = $accessTokenEntity->getIdentifier();
         $accessTokenEntity->expires_at = $accessTokenEntity->getExpiryDateTime();
         $accessTokenEntity->save();
