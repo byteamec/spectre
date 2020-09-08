@@ -17,7 +17,10 @@ class ClientRepository implements ClientRepositoryInterface
 
     public function getClientEntity($clientIdentifier, $grantType = null, $clientSecret = null, $mustValidateSecret = true)
     {
-        $client = $this->oauthClients->find($clientIdentifier);
+        $cachedId = "spc-cli-$clientIdentifier";
+        $client = \Cache::remember($cachedId, 300, function () use ($clientIdentifier) {
+            return $this->oauthClients->find($clientIdentifier);
+        });
         if (!is_null($client) && $client->secret == $clientSecret && !$client->revoked) {
             $client->setIdentifier($clientIdentifier);
             switch ($grantType) {
