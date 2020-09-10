@@ -20,7 +20,7 @@ class UserRepository implements UserRepositoryInterface
         else
             $users = app($clientEntity->user_type);
 
-        $user = $users->where('name', $username)->first();
+        $user = $users->cacheFor(60*60)->where('name', $username)->first();
         if (!is_null($user)) {
             $user->setIdentifier($user->id);
             $hasher = app('hash');
