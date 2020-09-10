@@ -139,12 +139,14 @@ class SpectreServiceProvider extends ServiceProvider
             $psr = $this->app->make(ResourceServer::class)
                 ->validateAuthenticatedRequest($psr);
 
-            $client = app('Byteam\Spectre\OAuthClient')->find($psr->getAttribute('oauth_client_id'));
+            $client = app('Byteam\Spectre\OAuthClient')->cacheFor(config('spectre.cache.clientTimeout', 24 * 3600))
+                ->where('id', $psr->getAttribute('oauth_client_id'))->first();
             if ($client->user_type == null)
                 $users = app('Byteam\Spectre\User');
             else
                 $users = app($client->user_type);
-            return $users->find($psr->getAttribute('oauth_user_id'));
+            return $users->cacheFor(config('spectre.cache.userTimeout', 24 * 3600))
+                ->where('id', $psr->getAttribute('oauth_user_id'))->first();
         } catch (OAuthServerException $e) {
             return null;
         }

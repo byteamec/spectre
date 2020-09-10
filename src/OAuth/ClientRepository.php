@@ -17,7 +17,7 @@ class ClientRepository implements ClientRepositoryInterface
 
     public function getClientEntity($clientIdentifier, $grantType = null, $clientSecret = null, $mustValidateSecret = true)
     {
-        $client = $this->oauthClients->cacheFor(60 * 60)
+        $client = $this->oauthClients->cacheFor(config('spectre.cache.clientTimeout', 24 * 3600))
             ->where('id', $clientIdentifier)->first();
         if (!is_null($client) && $client->secret == $clientSecret && !$client->revoked) {
             $client->setIdentifier($clientIdentifier);
