@@ -145,8 +145,7 @@ class SpectreServiceProvider extends ServiceProvider
                 $users = app('Byteam\Spectre\User');
             else
                 $users = app($client->user_type);
-            return $users->cacheFor(config('spectre.cache.userTimeout', 24 * 3600))
-                ->where('id', $psr->getAttribute('oauth_user_id'))->first();
+            return $users->find($psr->getAttribute('oauth_user_id'));
         } catch (OAuthServerException $e) {
             return null;
         }

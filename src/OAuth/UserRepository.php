@@ -20,8 +20,7 @@ class UserRepository implements UserRepositoryInterface
         else
             $users = app($clientEntity->user_type);
 
-        $user = $users->cacheFor(config('spectre.cache.userTimeout', 24 * 3600))
-            ->where('name', $username)->first();
+        $user = $users->where('name', $username)->first();
         if (!is_null($user)) {
             $user->setIdentifier($user->id);
             $hasher = app('hash');

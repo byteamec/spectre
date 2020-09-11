@@ -11,11 +11,10 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use League\OAuth2\Server\Entities\Traits\EntityTrait;
 use League\OAuth2\Server\Entities\UserEntityInterface;
-use Rennokki\QueryCache\Traits\QueryCacheable;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, UserEntityInterface
 {
-    use Authenticatable, Authorizable, EntityTrait, QueryCacheable;
+    use Authenticatable, Authorizable, EntityTrait;
 
     protected $table = 'users';
 
