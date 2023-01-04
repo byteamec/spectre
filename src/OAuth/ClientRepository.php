@@ -2,7 +2,7 @@
 
 namespace Byteam\Spectre\OAuth;
 
-
+use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 
 class ClientRepository implements ClientRepositoryInterface
@@ -15,6 +15,10 @@ class ClientRepository implements ClientRepositoryInterface
         $this->oauthClients = app('Byteam\Spectre\OAuthClient');
     }
 
+    /**
+     * 
+     * @return ClientEntityInterface
+     */
     public function getClientEntity($clientIdentifier)
     {
         $client = $this->oauthClients->cacheFor(config('spectre.cache.clientTimeout', 24 * 3600))
@@ -28,7 +32,6 @@ class ClientRepository implements ClientRepositoryInterface
         $client = $this->oauthClients->cacheFor(config('spectre.cache.clientTimeout', 24 * 3600))
             ->where('id', $clientIdentifier)->first();
         if (!is_null($client) && $client->secret == $clientSecret && !$client->revoked) {
-            $client->setIdentifier($clientIdentifier);
             switch ($grantType) {
                 case "password":
                 case "refresh_token":
