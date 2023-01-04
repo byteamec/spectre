@@ -30,8 +30,9 @@ class SpectreServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
         $this->loadRoutes();
 
-        app('router')->aliasMiddleware(
-            'oauth', \Byteam\Spectre\Http\Middleware\OAuthMiddleware::class);
+        $this->app->routeMiddleware([
+            'oauth' => \Byteam\Spectre\Http\Middleware\OAuthMiddleware::class
+        ]);
 
         $this->app['auth']->viaRequest('api', function ($request) {
             return $this->getUserViaRequest($request);
