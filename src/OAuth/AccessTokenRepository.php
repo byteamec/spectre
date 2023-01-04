@@ -22,8 +22,10 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
     {
         $token = new OAuthToken();
         $token->user_id = $userIdentifier;
+        $token->setUserIdentifier($userIdentifier);
         $token->scopes = implode(",", $scopes);
         $token->client_id = $clientEntity->getIdentifier();
+        $token->setClient($clientEntity);
 
         return $token;
     }

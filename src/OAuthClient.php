@@ -23,4 +23,9 @@ class OAuthClient extends Model implements ClientEntityInterface
     {
         return explode(',', $this->redirect);
     }
+
+    public function isConfidential()
+    {
+        return $this->type == 'P';
+    }
 }

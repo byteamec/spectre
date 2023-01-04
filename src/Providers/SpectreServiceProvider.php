@@ -14,7 +14,7 @@ use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Grant\PasswordGrant;
 use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use League\OAuth2\Server\ResourceServer;
-use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
+use Psr\Http\Message\ServerRequestInterface;
 
 class SpectreServiceProvider extends ServiceProvider
 {
@@ -30,9 +30,8 @@ class SpectreServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
         $this->loadRoutes();
 
-        $this->app->routeMiddleware([
-            'oauth' => \Byteam\Spectre\Http\Middleware\OAuthMiddleware::class
-        ]);
+        app('router')->aliasMiddleware(
+            'oauth', \Byteam\Spectre\Http\Middleware\OAuthMiddleware::class);
 
         $this->app['auth']->viaRequest('api', function ($request) {
             return $this->getUserViaRequest($request);
@@ -44,7 +43,6 @@ class SpectreServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->configure('spectre');
         $this->accessTokenInterval = config('spectre.interval.access_token', 'PT1H');
         $this->refreshTokenInterval = config('spectre.interval.refresh_token', 'P1M');
 
@@ -134,7 +132,7 @@ class SpectreServiceProvider extends ServiceProvider
      */
     private function getUserViaRequest($request)
     {
-        $psr = (new DiactorosFactory)->createRequest($request);
+        $psr = $this->app->make(ServerRequestInterface::class);
         try {
             $psr = $this->app->make(ResourceServer::class)
                 ->validateAuthenticatedRequest($psr);

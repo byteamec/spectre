@@ -15,7 +15,15 @@ class ClientRepository implements ClientRepositoryInterface
         $this->oauthClients = app('Byteam\Spectre\OAuthClient');
     }
 
-    public function getClientEntity($clientIdentifier, $grantType = null, $clientSecret = null, $mustValidateSecret = true)
+    public function getClientEntity($clientIdentifier)
+    {
+        $client = $this->oauthClients->cacheFor(config('spectre.cache.clientTimeout', 24 * 3600))
+            ->where('id', $clientIdentifier)->first();
+        $client->setIdentifier($clientIdentifier);
+        return $client;
+    }
+
+    public function validateClient($clientIdentifier, $clientSecret, $grantType)
     {
         $client = $this->oauthClients->cacheFor(config('spectre.cache.clientTimeout', 24 * 3600))
             ->where('id', $clientIdentifier)->first();
@@ -24,9 +32,9 @@ class ClientRepository implements ClientRepositoryInterface
             switch ($grantType) {
                 case "password":
                 case "refresh_token":
-                    return $client->type == "P" ? $client : null;
+                    return $client->type == "P";
             }
         }
-        return null;
+        return false;
     }
 }

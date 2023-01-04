@@ -4,9 +4,10 @@ namespace Byteam\Spectre\Http\Middleware;
 
 use Byteam\Spectre\Exception\OAuthException;
 use Closure;
+use Illuminate\Http\Request;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\ResourceServer;
-use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
+use Psr\Http\Message\ServerRequestInterface;
 
 class OAuthMiddleware
 {
@@ -32,10 +33,9 @@ class OAuthMiddleware
      *
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
-        $psr = (new DiactorosFactory)->createRequest($request);
-
+        $psr = app(ServerRequestInterface::class);
         try {
             $psr = $this->resourceServer->validateAuthenticatedRequest($psr);
         } catch (OAuthServerException $e) {

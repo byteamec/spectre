@@ -8,7 +8,7 @@ use Illuminate\Http\Response;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response as Psr7Response;
+use Nyholm\Psr7\Response as Psr7Response;
 
 class OAuthController extends Controller
 {
